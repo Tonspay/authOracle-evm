@@ -11,7 +11,13 @@ module.exports = {
         version: "0.4.11",
       },
     ],
-  }
+  },
+  networks: {
+    arb: {
+      url: `https://arbitrum.llamarpc.com`,
+      accounts: [''],
+    },
+  },
   
 
 
