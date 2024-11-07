@@ -31,6 +31,12 @@ Some of them have to reconsider to did via web2.5 or oracle bridges silimar to c
     - Requir web2 callback-reciver 
     - Oracle update 
 
+## Contract address
+
+Now it deploy in 
+
+Arb : `0x7f15a1acc164636fdbb8f112fae40825d1ebf1da`
+
 ## It is a Sample Hardhat Project
 
 This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a Hardhat Ignition module that deploys that contract.
