@@ -4,6 +4,16 @@ This repo is to try build a social media account auth system onchain , support a
 
 It's similar to chainlink Oracle . So we name it `Auth-Oracle` .
 
+### Demo
+
+Currently we have build a demo base on telegram [webapp](https://t.me/ogfinder_bot/test) . 
+
+The source code of font-end can be found in `./web/index.html`
+
+It will automatically fetch the user's telegram information and ask for contract `0x7f15a1acc164636fdbb8f112fae40825d1ebf1da` to verfiy.
+
+Contract also suppor for fully on-chain visit . 
+
 ## What to achive ?
 
 An oracle contract to verfiy input data with web2 social media account .

@@ -1,0 +1,168 @@
+<html>
+    <head>
+        <title>
+            Hello world
+        </title>
+    </head>
+
+    <body>
+        <script src="https://telegram.org/js/telegram-web-app.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+        <script src="https://bundle.run/buffer@6.0.3"></script>
+        <script type="text/javascript">
+          window.Buffer = window.Buffer ?? buffer.Buffer;
+        </script>
+        
+        <h3>You telegram auth informations ::</h3>
+        
+        <div id="rawData"></div>
+        <br>
+        <div id="hash"></div>
+        <br>
+        <div id="contract_address"> Contract address :: 0x7f15a1acc164636fdbb8f112fae40825d1ebf1da</div>
+        <br>
+        <div id="contract_check"></div>
+
+        <script>
+            async function miniapp_init() {
+                await Telegram.WebApp.ready();
+                if (window.Telegram.WebApp.initData) {
+                    return window.Telegram.WebApp
+                }
+                return false
+            }
+
+            function generator(telegramInitData)
+            {
+                const initData = new URLSearchParams(telegramInitData);
+
+                initData.sort();
+
+                const hash = initData.get("hash");
+                initData.delete("hash");
+
+                const dataToCheck = [...initData.entries()].map(([key, value]) => key + "=" + value).join("\n");
+
+                const dtc = Buffer.from(dataToCheck).toString("hex");
+
+                return {
+                    initData,
+                    dtc,
+                    hash:"0x"+hash
+                }
+            }
+
+            async function init() {
+                let initData = await miniapp_init();
+                console.log(
+                    initData.initData
+                )
+                if(initData)
+            {
+                const gt = generator(initData.initData)
+                const ver = await tgVerfiy(
+                    Buffer.from(gt.dtc,"hex"),
+                    gt.hash
+                )
+                document.getElementById('rawData').innerHTML = `User :: ${gt.initData.get("user")} `
+                document.getElementById('hash').innerHTML = `Hash :: ${gt.hash} `
+                document.getElementById('contract_check').innerHTML = `Contract Verfiy :: ${ver} `
+            }else{
+                document.getElementById('rawData').innerHTML = "false"
+            }
+                
+
+
+            }
+
+            async function tgVerfiy(verfiData,hash) {
+                     const web3 = new Web3(new Web3.providers.HttpProvider('https://arbitrum.llamarpc.com'))
+
+                    const contract = new web3.eth.Contract( abi, '0x7f15a1acc164636fdbb8f112fae40825d1ebf1da' );
+
+                    let result = await contract.methods.verfi(
+                        verfiData,
+                        hash
+                    ).call()
+                    console.info("verfi: ", result)  
+                    return result
+            }
+
+            const abi = [
+    {
+      "inputs": [
+        {
+          "internalType": "bytes",
+          "name": "apiToken",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "dataToCheck",
+          "type": "bytes"
+        }
+      ],
+      "name": "generator",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes",
+          "name": "key",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "message",
+          "type": "bytes"
+        }
+      ],
+      "name": "hmacsha256",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes",
+          "name": "dataToCheck",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "originalHash",
+          "type": "bytes32"
+        }
+      ],
+      "name": "verfi",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ];
+            init()
+        </script>
+    </body>
+</html>
